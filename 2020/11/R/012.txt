@@ -1,0 +1,14 @@
+library(ggplot2)
+library(reshape2)
+library(scales)
+econCor <- cor(economics[, c(2, 4:6)])
+econMelt <- melt(econCor,varnames=c('x','t'),value.name = 'Correlation')
+econMelt <- econMelt[order(econMelt$Correlation), ]
+econMelt
+ggplot(econMelt,aes(x=x,y=y))+
+  geom tile(aes(fill=Correlation))+
+  scale fill gradient2(low='black',mid='white',high='steelblue',
+                       guide=guide colorbar(ticks=FALSE,barheight=10),
+                       limits=c(-1,1))+
+                        theme minimal()+
+                        labs(x=NULL,y=NULL)

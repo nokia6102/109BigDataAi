@@ -41,7 +41,7 @@ plot(return)
 #套件quantmod也包含了其技術指標，???常用的我想就是布靈通道。
 
 #再畫出股價走勢圖後，再輸入指令 addBBands()
-addBBands()
+  addBBands()
 #畫在下方
 addBBands(draw="p")
 
