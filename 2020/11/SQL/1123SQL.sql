@@ -92,5 +92,40 @@ SELECT * FROM NewTitanic2 WHERE [Name] LIKE '%mr.%' AND [Age] IS NULL;
 SELECT * FROM NewTitanic2 WHERE [Name] LIKE '%mr.%' AND [Parch]>2 AND [Age] IS NULL;
 SELECT * FROM NewTitanic2 WHERE [Name] LIKE '%mr,%' AND [Parch]=2 AND [Age] IS NULL;
 
---男的平均 在 class3--
+--男的平均 在 class3-
 SELECT AVG([Age]) FROM NewTitanic2 WHERE [Name] LIKE '%mr.%' AND [Pclass]=3;
+SELECT AVG([Age]) FROM NewTitanic2 WHERE [Name] LIKE '%mr.%' AND [Pclass]=3 AND [SibSp]=0 AND [Parch]=0;
+SELECT [Pclass],AVG([Age]) FROM NewTitanic2 WHERE [Name] LIKE '%mr.%' AND [SibSp]=0 AND [Parch]=0 GROUP BY [Pclass]; 
+
+SELECT * FROM NewTitanic2 WHERE [Name] LIKE	
+
+
+Running under: Windows 10 x64 (build 18363)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=Chinese (Traditional)_Taiwan.950 
+[2] LC_CTYPE=Chinese (Traditional)_Taiwan.950   
+[3] LC_MONETARY=Chinese (Traditional)_Taiwan.950
+[4] LC_NUMERIC=C                                
+[5] LC_TIME=Chinese (Traditional)_Taiwan.950    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] RevoUtilsMath_11.0.0 RevoUtils_11.0.2     RevoMods_11.0.1     
+[4] MicrosoftML_9.4.7    mrsdeploy_1.1.3      RevoScaleR_9.4.7    
+[7] lattice_0.20-38      rpart_4.1-13        
+
+loaded via a namespace (and not attached):
+ [1] codetools_0.2-15       CompatibilityAPI_1.1.0 foreach_1.5.1         
+ [4] grid_3.5.2             R6_2.3.0               jsonlite_1.5          
+
+來自外部指令碼的 STDOUT 訊息: 
+ [7] curl_3.3               iterators_1.0.11       tools_3.5.2           
+[10] compiler_3.5.2         parallel_3.5.2        
+
+
+完成時間: 2020-11-24T11:38:08.9706065+08:00
