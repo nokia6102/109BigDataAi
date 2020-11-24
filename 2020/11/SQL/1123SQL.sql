@@ -97,35 +97,129 @@ SELECT AVG([Age]) FROM NewTitanic2 WHERE [Name] LIKE '%mr.%' AND [Pclass]=3;
 SELECT AVG([Age]) FROM NewTitanic2 WHERE [Name] LIKE '%mr.%' AND [Pclass]=3 AND [SibSp]=0 AND [Parch]=0;
 SELECT [Pclass],AVG([Age]) FROM NewTitanic2 WHERE [Name] LIKE '%mr.%' AND [SibSp]=0 AND [Parch]=0 GROUP BY [Pclass]; 
 
-SELECT * FROM NewTitanic2 WHERE [Name] LIKE	
+SELECT * FROM NewTitanic2 WHERE [Name] LIKE '%mr.%' AND [SibSp]=0 AND [Parch]=0; 
+SELECT * FROM NewTitanic2 WHERE [Name] LIKE '%mr.%' AND [Pclass]=3 AND [SibSp]=0 AND [Parch]=0;
+SELECT * FROM NewTitanic2 WHERE [Name] LIKE '%mr.%' AND [Pclass]=1 AND [SibSp]=0 AND [Parch]=0 AND [Age] IS NULL;
+SELECT * FROM NewTitanic2 WHERE [Name] LIKE '%mr.%' AND [Pclass]=2 AND [SibSp]=0 AND [Parch]=0 AND [Age] IS NULL;
 
 
-Running under: Windows 10 x64 (build 18363)
+---$
 
-Matrix products: default
+UPDATE NewTitanic2 SET [Age]=45 WHERE [Name] LIKE '%mr.%' AND [Pclass]=1 AND [SibSp]=0 AND [Parch]=0 AND [Age] IS NULL;
+UPDATE NewTitanic2 SET [Age]=33 WHERE [Name] LIKE '%mr.%' AND [Pclass]=2 AND [SibSp]=0 AND [Parch]=0 AND [Age] IS NULL;
+UPDATE NewTitanic2 SET [Age]=28 WHERE [Name] LIKE '%mr.%' AND [Pclass]=3 AND [SibSp]=0 AND [Parch]=0 AND [Age] IS NULL;
+UPDATE NewTitanic2 SET [Age]=22 WHERE [Name] LIKE '%mr.%' AND [SibSp]>=2 AND [Parch]>=2 AND [Age] IS NULL;	--有家庭，有父母的兄弟們
+UPDATE NewTitanic2 SET [Age]=30 WHERE [Name] LIKE '%mr.%' AND [SibSp]>=2 AND [Parch]=0 AND [Age] IS NULL;	--兄弟們
+UPDATE NewTitanic2 SET [Age]=35 WHERE [Name] LIKE '%mr.%' AND [SibSp]=1 AND [Parch]>=1 AND [Age] IS NULL;	--有老婆，並且有帶孩子
+UPDATE NewTitanic2 SET [Age]=35 WHERE [Name] LIKE '%mr.%' AND [Age] IS NULL;	--剩餘的Mr.
 
-locale:
-[1] LC_COLLATE=Chinese (Traditional)_Taiwan.950 
-[2] LC_CTYPE=Chinese (Traditional)_Taiwan.950   
-[3] LC_MONETARY=Chinese (Traditional)_Taiwan.950
-[4] LC_NUMERIC=C                                
-[5] LC_TIME=Chinese (Traditional)_Taiwan.950    
+SELECT * FROM NewTitanic2 WHERE [Name] LIKE '%mr.%' AND [Age] IS NULL;  
 
-attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-other attached packages:
-[1] RevoUtilsMath_11.0.0 RevoUtils_11.0.2     RevoMods_11.0.1     
-[4] MicrosoftML_9.4.7    mrsdeploy_1.1.3      RevoScaleR_9.4.7    
-[7] lattice_0.20-38      rpart_4.1-13        
+SELECT * FROM NewTitanic2 WHERE [Name] LIKE '%miss.%' AND [Age] IS NULL;  
 
-loaded via a namespace (and not attached):
- [1] codetools_0.2-15       CompatibilityAPI_1.1.0 foreach_1.5.1         
- [4] grid_3.5.2             R6_2.3.0               jsonlite_1.5          
+/*
+WITH TT
+AS
+( SELECT [Ticket],COUNT([PassengerId]) AS [Cnt] FROM NewTitanic2 GROUP BY [Ticket] HAVING COUNT([PassengerId])>1 )
 
-來自外部指令碼的 STDOUT 訊息: 
- [7] curl_3.3               iterators_1.0.11       tools_3.5.2           
-[10] compiler_3.5.2         parallel_3.5.2        
+SELECT *
+FROM NewTitanic2
+WHERE [Name] LIKE '%miss.%' AND [Age] IS NULL AND [Parch]=0
+	AND [Ticket] IN (SELECT [TIcket] FROM TT); 
+*/
+
+WITH TT
+AS
+( SELECT [Ticket],COUNT([PassengerId]) AS [Cnt] FROM NewTitanic2 GROUP BY [Ticket] HAVING COUNT([PassengerId])>1 )
+,UU
+AS
+(
+	SELECT [PassengerId] FROM NewTitanic2
+	WHERE [Name] LIKE '%miss.%' AND [Age] IS NULL AND [Parch]>0
+		AND [Ticket] IN (SELECT [TIcket] FROM TT)
+)
+UPDATE NewTitanic2 SET [Age]=13 WHERE [PassengerId] IN(SELECT [PassengerId] FROM UU);		--有父母及兄弟姊妹的Miss(年輕小朋友)
+ 
+
+WITH TT
+AS
+( SELECT [Ticket],COUNT([PassengerId]) AS [Cnt] FROM NewTitanic2 GROUP BY [Ticket] HAVING COUNT([PassengerId])>1 )
+,UU
+AS
+(
+	SELECT [PassengerId] FROM NewTitanic2
+	WHERE [Name] LIKE '%miss.%' AND [Age] IS NULL AND [Parch]=0
+		AND [Ticket] IN (SELECT [TIcket] FROM TT)
+)
+UPDATE NewTitanic2 SET [Age]=24 WHERE [PassengerId] IN(SELECT [PassengerId] FROM UU);		--兄弟姊妹的Miss(成年)
 
 
-完成時間: 2020-11-24T11:38:08.9706065+08:00
+
+SELECT MAX([Age]),MIN([Age]),AVG([Age]) FROM NewTitanic2 WHERE [Name] LIKE '%miss.%' AND [Pclass]=3
+
+SELECT * FROM NewTitanic2 WHERE [Name] LIKE '%miss.%' AND [Age] IS NULL;  
+UPDATE NewTitanic2 SET [Age]=38 WHERE [Name] LIKE '%miss.%' AND [Age] IS NULL;	--剩餘的Miss.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SELECT MAX([Age]),MIN([Age]),AVG([Age]) FROM NewTitanic2 WHERE [Sex]='male' AND [Pclass]=1
+SELECT * FROM NewTitanic2 WHERE [Age] IS NULL;  
+
+UPDATE NewTitanic2 SET [Age]=60 WHERE [PassengerId]=767;
+UPDATE NewTitanic2 SET [Age]=45 WHERE [PassengerId]=980;
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--SELECT * FROM NewTitanic2 WHERE [Age]<16 AND [Parch]>0
+
+ALTER TABLE NewTitanic2 ADD [IsFamilyHasChild] INT;
+UPDATE NewTitanic2 SET [IsFamilyHasChild]=0;
+
+/*
+WITH TT
+AS
+(
+	--SELECT [Ticket] FROM NewTitanic2 WHERE [Age]<16 AND [Parch]>0
+	SELECT * FROM NewTitanic2 WHERE [Age]<16 AND [Parch]>0
+)
+SELECT * FROM TT
+*/
+
+WITH TT
+AS
+(
+	SELECT [Ticket] FROM NewTitanic2 WHERE [Age]<16 AND [Parch]>0
+)
+UPDATE NewTitanic2 SET [IsFamilyHasChild]=1 WHERE [Ticket] IN(SELECT [Ticket] FROM TT);
+
+
+SELECT * FROM NewTitanic2
+
+
+--SELECT * FROM  NewTitanic2 WHERE [Parch]>=1 AND [IsFamilyHasChild]=1 AND [Age]>=16;
+ALTER TABLE NewTitanic2 ADD [IsMomOrDad] INT;
+UPDATE NewTitanic2 SET [IsMomOrDad]=0;
+
+WITH TT
+AS
+(
+	SELECT [PassengerId] FROM  NewTitanic2 WHERE [Parch]>=1 AND [IsFamilyHasChild]=1 AND [Age]>=16
+)
+UPDATE NewTitanic2 SET [IsMomOrDad]=1 WHERE [PassengerId] IN(SELECT [PassengerId] FROM TT);
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ALTER TABLE NewTitanic2 ADD [AgeLevel] INT;
+UPDATE NewTitanic2 SET [AgeLevel]=IIF([Age]>=45,3,IIF([Age]<16,1,2));
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ALTER TABLE NewTitanic2 ADD [IsGroup] INT;
+UPDATE NewTitanic2 SET [IsGroup]=0;
+
+WITH TT
+AS
+( SELECT [Ticket],COUNT([PassengerId]) AS [Cnt] FROM NewTitanic GROUP BY [Ticket] HAVING COUNT([PassengerId])>1 )
+UPDATE NewTitanic2 SET [IsGroup]=1 WHERE [Ticket] IN(SELECT [Ticket] FROM TT);
