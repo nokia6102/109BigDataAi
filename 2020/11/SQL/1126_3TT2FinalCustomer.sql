@@ -168,3 +168,60 @@ SELECT [實際組別],COUNT(*) AS Cnt,SUM([Bingo]) AS [Correct]
 	,1.0*SUM([Bingo])/COUNT(*) AS [羅吉斯迴歸(多分類)(即時)命中機率]
 FROM #TT
 GROUP BY [實際組別];
+
+--=====
+ALTER PROC #PP @sqlQuery NVARCHAR(MAX),@model VARBINARY(MAX) OUTPUT
+AS
+EXECUTE sp_execute_external_script @language = N'R',  
+		@script = N'   		
+	sqlData <- data.frame(InputDataSet)
+	cs<-colnames(sqlData)		#取出欄位名
+	frm<-paste(cs[1], paste(cs[2:length(cs)], collapse="+"), sep="~")
+	model<-rxNeuralNet(frm,sqlData,type="multiClass")
+	#print(model)
+	trainedModel <- rxSerializeModel(model,realtimeScoringOnly=TRUE)
+	'
+	,@input_data_1=@sqlQuery	
+	,@params=N'@trainedModel VARBINARY(MAX) OUTPUT'
+	,@trainedModel=@model OUTPUT;
+GO
+
+DECLARE @ss NVARCHAR(MAX);
+SET @ss=N'SELECT [GroupId],[ContinentName], [MaritalStatus], [Gender], [Education], [Occupation]
+	, [AgeLevel], [YearlyIncomeLevel], [HasChild], [HasHouse], [HasCar], [Star] FROM FinalCustomer WHERE [CustomerKey]<=12940'
+DECLARE @mm VARBINARY(MAX);
+EXEC #PP @ss,@mm OUTPUT;
+INSERT INTO 模型表(模型名稱,模型) VALUES(N'類神經(多分類)(即時)',@mm);
+
+SELECT * FROM 模型表
+---
+DECLARE @ss NVARCHAR(MAX);
+SET @ss=N'SELECT [GroupId],[ContinentName], [MaritalStatus], [Gender], [Education], [Occupation]
+	, [AgeLevel], [YearlyIncomeLevel], [HasChild], [HasHouse], [HasCar], [Star] FROM FinalCustomer WHERE [CustomerKey]>12940'
+DECLARE @mm VARBINARY(MAX);
+SELECT @mm=模型 FROM 模型表 WHERE 編號=2
+
+INSERT INTO #TT
+EXECUTE sp_execute_external_script @language = N'R',  
+		@script = N'   		
+	sqlData <- data.frame(InputDataSet)
+	model <- rxUnserializeModel(trainedModel)
+	result<-rxPredict(model,sqlData,extraVarsToWrite=c("GroupId"))	
+	#OutputDataSet<-result
+	OutputDataSet<-result[,1:2]
+	'
+	,@input_data_1=@ss	
+	,@params=N'@trainedModel VARBINARY(MAX)'
+	,@trainedModel=@mm;
+
+SELECT * FROM #TT
+
+
+ALTER TABLE #TT ADD [Bingo] INT;
+UPDATE #TT SET [Bingo]=0;
+UPDATE #TT SET [Bingo]=1 WHERE 實際組別=推薦組別;
+
+SELECT [實際組別],COUNT(*) AS Cnt,SUM([Bingo]) AS [Correct]
+	,1.0*SUM([Bingo])/COUNT(*)AS [類神經(多分類)(即時)(模型2)]
+FROM #TT
+GROUP BY [實際組別];
