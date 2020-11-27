@@ -79,11 +79,11 @@ DECLARE
 @TotalNum INT, --磅︽Ω计
 @Num INT       --ヘ玡Ω计
 -- DECLARE @id INT=1;
-DECLARE @ans NVARCHAR(1024);
+DECLARE @ans NVARCHAR(MAX);
 
 --砞﹚癹伴把计
 SET @TotalNum = @t --磅︽Ω计
-SET @Num = 4        --ヘ玡Ω计 
+SET @Num = 1        --ヘ玡Ω计 
 
 --磅︽WHILE癹伴
 WHILE @Num <= @TotalNum  --讽ヘ玡Ω计单磅︽Ω计
