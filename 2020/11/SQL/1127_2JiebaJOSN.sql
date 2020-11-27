@@ -1,11 +1,11 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-ALTER PROC KeyWordToJson @id INT,@result NVARCHAR(1024) OUTPUT
+ALTER PROC KeyWordToJson @id INT,@result NVARCHAR(MAX) OUTPUT
 AS
 	CREATE TABLE #TT
 	(
-		[KeyWord] NVARCHAR(100)
+		[KeyWord] NVARCHAR(MAX)
 	);
 	DECLARE @sqlQuery nvarchar(max) = CONCAT(N'SELECT [News] FROM [News] WHERE [NewsId]=',@id)
 
