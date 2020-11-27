@@ -69,3 +69,32 @@ DECLARE @id INT=1;
 DECLARE @ans NVARCHAR(1024);
 EXEC [KeyWordToJson] @id,@ans OUTPUT;
 UPDATE [News] SET [KeyWords]=@ans WHERE [NewsId]=@id;
+
+---
+
+--﹚竡癹伴把计
+DECLARE @t INT = (SELECT Max(NewsId) FROM News);
+
+DECLARE  
+@TotalNum INT, --磅︽Ω计
+@Num INT       --ヘ玡Ω计
+-- DECLARE @id INT=1;
+DECLARE @ans NVARCHAR(1024);
+
+--砞﹚癹伴把计
+SET @TotalNum = @t --磅︽Ω计
+SET @Num = 2        --ヘ玡Ω计 
+
+--磅︽WHILE癹伴
+WHILE @Num <= @TotalNum  --讽ヘ玡Ω计单磅︽Ω计
+BEGIN
+
+    /*
+    硂柑璶磅︽SQL
+    */
+	EXEC [KeyWordToJson] @Num,@ans OUTPUT;
+    UPDATE [News] SET [KeyWords]=@ans WHERE [NewsId]=@Num;
+
+    --砞﹚ヘ玡Ω计+1
+    SET @Num = @Num + 1
+END
