@@ -73,8 +73,7 @@ UPDATE [News] SET [KeyWords]=@ans WHERE [NewsId]=@id;
 ---
 
 --定義迴圈參數
---DECLARE @t INT = (SELECT Max(NewsId) FROM News);
-DECLARE @t INT = 76;
+DECLARE @t INT = (SELECT Max(NewsId) FROM News);
 
 DECLARE  
 @TotalNum INT, --執行次數

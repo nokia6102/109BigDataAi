@@ -1,10 +1,10 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-DECLARE @jj NVARCHAR(MAX);
+DECLARE @jj NVARCHAR(1024);
 SELECT @jj=[KeyWords] FROM [News] WHERE [NewsId]=210;
 SELECT * FROM OPENJSON(@jj)
 WITH(
-	[KeyWords] NVARCHAR(MAX) '$.KeyWord',
+	[KeyWords] NVARCHAR(10) '$.KeyWord',
 	[Cnt] INT '$.Cnt'
 )
 
