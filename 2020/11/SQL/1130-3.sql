@@ -47,6 +47,7 @@ AS
 ;
 GO
 DECLARE @ss NVARCHAR(1024)=N'SELECT * FROM NewPitcher';
+
 DECLARE @mm VARBINARY(MAX);
 EXEC #TempPP @ss,@mm OUTPUT;
 INSERT INTO 模型表(模型名稱,模型) VALUES(N'快速迴歸樹(即時)',@mm);
