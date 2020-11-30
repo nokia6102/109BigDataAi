@@ -33,7 +33,7 @@ GO
 
 
 SELECT * FROM News
-SELECT * FROM GetKeyWords(4)
+SELECT * FROM GetKeyWords(61)
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -42,25 +42,35 @@ SELECT B.KeyWords,B.[Cnts] AS [Total]
 FROM [News] AS A CROSS APPLY GetKeyWords(A.NewsId) AS B
 WHERE SUBSTRING(A.Label,1,1)='1'
 */
-
+ 
+ 
 SELECT B.KeyWords,SUM(B.[Cnts]) AS [Total]
+INTO  T1
 FROM [News] AS A CROSS APPLY GetKeyWords(A.NewsId) AS B
-WHERE SUBSTRING(A.Label,1,1)='5' AND LEN(B.KeyWords)>1
+WHERE SUBSTRING(A.Label,1,1)='1' AND LEN(B.KeyWords)>1
 GROUP BY B.[KeyWords]
 ORDER BY [Total] DESC
+ 
+ 
 
 SELECT B.KeyWords,SUM(B.[Cnts]) AS [Total]
+INTO  T2
 FROM [News] AS A CROSS APPLY GetKeyWords(A.NewsId) AS B
 WHERE A.Label='11' AND LEN(B.KeyWords)>1
 GROUP BY B.[KeyWords]
 ORDER BY [Total] DESC
+
+SELECT * FROM T1
+UNION 
+SELECT * FROM T2
+ORDER BY Total
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 --pip.exe install WordCloud
 --¤å¦r¶³
-
+Use MyNews
 
 --DROP TABLE #Temp
 SELECT B.KeyWords,SUM(B.[Cnts]) AS [TotalCnt]

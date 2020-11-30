@@ -73,8 +73,8 @@ UPDATE [News] SET [KeyWords]=@ans WHERE [NewsId]=@id;
 ---
 
 --﹚竡癹伴把计
---DECLARE @t INT = (SELECT Max(NewsId) FROM News);
-DECLARE @t INT = 76;
+DECLARE @t INT = (SELECT Max(NewsId) FROM News);
+--DECLARE @t INT = 4;
 
 DECLARE  
 @TotalNum INT, --磅︽Ω计
@@ -84,7 +84,7 @@ DECLARE @ans NVARCHAR(MAX);
 
 --砞﹚癹伴把计
 SET @TotalNum = @t --磅︽Ω计
-SET @Num = 1        --ヘ玡Ω计 
+SET @Num = 1        --ヘ玡Ω计	
 
 --磅︽WHILE癹伴
 WHILE @Num <= @TotalNum  --讽ヘ玡Ω计单磅︽Ω计
