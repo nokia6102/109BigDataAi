@@ -68,7 +68,7 @@ FROM Temp AS A JOIN [FinalCheckList] AS B ON A.KeyWords=B.KeyWords
 																			    
 ORDER BY [Cnts] Desc;
 ---
---在那幾類別的的機率
+--	
 WITH Temp
 AS
 (
