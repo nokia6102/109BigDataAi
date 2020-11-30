@@ -38,12 +38,12 @@ SELECT * FROM GetKeyWords(4)
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
- 
+------ 
 SELECT B.KeyWords,B.[Cnts] AS [Total]
 FROM [News] AS A CROSS APPLY GetKeyWords(A.NewsId) AS B
 WHERE SUBSTRING(A.Label,1,1)='1'
  
-
+-----
 SELECT B.KeyWords,SUM(B.[Cnts]) AS [Total]
 FROM [News] AS A CROSS APPLY GetKeyWords(A.NewsId) AS B
 WHERE SUBSTRING(A.Label,1,1)='1' AND LEN(B.KeyWords)>1
