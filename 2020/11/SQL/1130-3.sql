@@ -12,10 +12,10 @@ AS
 	@script = N'
 			inputData<-data.frame(InputDataSet)
 			cs<-colnames(inputData)
-			frm<-paste(cs[1],paste(cs[2:lenght(cs)],collapse="+",sep="~")
-			model<-rxLinMode(frm,inpuData)
+			frm<-paste(cs[1], paste(cs[2:length(cs)], collapse="+"), sep="~")
+			model<-rxLinMod(frm,inputData)
 			print(model)
-			trainedModel<-rxSerializeMode(mode,realtimeScoringOnly=TRUE)
+			trainedModel<-rxSerializeModel(model,realtimeScoringOnly=TRUE)
 			'
 			,@input_data_1=@sqlQuery
 			,@params=N'@trainedModel VARBINARY(MAX) OUTPUT'
@@ -28,5 +28,6 @@ DECLARE @mm VARBINARY(MAX);
 EXEC #TempPP @ss,@mm OUTPUT;
 INSERT INTO 家(家嘿,家) VALUES(N'絬┦癹耴()',@mm);
 
--- truncate TABLE 家
+--TRUNCATE TABLE TABLE
 SELECT * FROM 家
+-----------------------------------------------------------
