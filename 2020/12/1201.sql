@@ -357,7 +357,7 @@ AS
 		inputData<-data.frame(InputDataSet)	
 		cs<-colnames(inputData)		#取出欄位名
 		frm<-paste(cs[1], paste(cs[2:length(cs)], collapse=" + "), sep=" ~ ")			
-		model <- rxFastForest(frm, inputData,type = c("binary"))		
+		model <- rxFastTrees(frm, inputData,type = c("binary"))		
 		trainedModel<-rxSerializeModel(model,realtimeScoringOnly=TRUE)
 	'
 	,@input_data_1=@sqlQuery
@@ -365,9 +365,27 @@ AS
 	,@trainedModel=@trainedModel OUTPUT
 	;
  
-EXEC PUTMM  N'快速決策森林';
+EXEC PUTMM  N'快速決策樹';
 GO
 
+
+ALTER PROC #TempPP @sqlQuery NVARCHAR(MAX),@trainedModel VARBINARY(MAX) OUTPUT
+AS
+	EXECUTE sp_execute_external_script @language = N'R',  
+	@script = N'   
+		inputData<-data.frame(InputDataSet)	
+		cs<-colnames(inputData)		#取出欄位名
+		frm<-paste(cs[1], paste(cs[2:length(cs)], collapse=" + "), sep=" ~ ")			
+		model <- rxLogisticRegression(frm, inputData,type = c("binary"))		
+		trainedModel<-rxSerializeModel(model,realtimeScoringOnly=TRUE)
+	'
+	,@input_data_1=@sqlQuery
+	,@params=N'@trainedModel VARBINARY(MAX) OUTPUT'
+	,@trainedModel=@trainedModel OUTPUT
+	;
+ 
+EXEC PUTMM  N'快速羅吉斯';
+GO
 
  
 ---解出來計算
