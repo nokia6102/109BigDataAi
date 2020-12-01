@@ -266,7 +266,7 @@ AS
 		-- truncate TABLE 模型表;
   END 
 
---Revo第一團對
+--Revo第一團對 決策森林
 ALTER PROC #TempPP @sqlQuery NVARCHAR(MAX),@trainedModel VARBINARY(MAX) OUTPUT
 AS
 	EXECUTE sp_execute_external_script @language = N'R',  
@@ -305,28 +305,26 @@ AS
 --TRUNCATE TABLE  模型表
 EXEC PUTMM  N'羅吉斯迴歸';
 
-
---Revo第一團對 rxLogit
+--Revo第一團對 決策樹
 ALTER PROC #TempPP @sqlQuery NVARCHAR(MAX),@trainedModel VARBINARY(MAX) OUTPUT
 AS
 	EXECUTE sp_execute_external_script @language = N'R',  
-	@script = N'   
+	  @script = N'   
 		inputData<-data.frame(InputDataSet)	
-		cs<-colnames(inputData)		#取出欄位名		
-		frm<-paste(cs[1], paste(cs[2:length(cs)], collapse="+"), sep="~")
-		model <- rxLogit(frm,inputData)		
+		cs<-colnames(inputData)		#取出欄位名
+		frm<-paste(cs[1], paste(cs[2:length(cs)], collapse=" + "), sep=" ~ ")	
+		model <- rxDTree(frm, inputData)
 		trainedModel<-rxSerializeModel(model)
 	'
-	,@input_data_1=@sqlQuery
-	,@params=N'@trainedModel VARBINARY(MAX) OUTPUT'
-	,@trainedModel=@trainedModel OUTPUT
-;
+		,@input_data_1=@sqlQuery
+		,@params=N'@trainedModel VARBINARY(MAX) OUTPUT'
+		,@trainedModel=@trainedModel OUTPUT
+	;
+GO
  
 --TRUNCATE TABLE  模型表
-EXEC PUTMM  N'羅吉斯迴歸';
-
-
-
+EXEC PUTMM  N'決策樹';
+--DELETE  FROM 模型表 WHERE 模型 IS NULL
 
 
 ---插入決策森林
