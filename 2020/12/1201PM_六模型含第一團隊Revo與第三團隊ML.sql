@@ -444,3 +444,41 @@ EXEC sp_execute_external_script
   @params = N'@model varbinary(max)',
   @model = @mm
  ;
+
+ ---
+ ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ --測試模型
+DECLARE @query nvarchar(max) = N'SELECT [BikeBuyer], [NewGender], [NewMarital], [AgeLevel], [YearlyIncomeLevel], [Star]
+	, [HouseOwned], [NumberCarsOwned], [HasChild], [HasChildAtHome], [EduLevel], [JobLevel], [DistanceLevel], [RegionLevel]
+	FROM [BikeBuyerPredict_New] WHERE [RowId]>13000';
+DECLARE @mm VARBINARY(MAX) = (SELECT 模型 FROM 模型表 WHERE 編號=1);
+
+EXEC sp_execute_external_script 
+  @language = N'R',
+  @script = N'
+    trainedModel <- rxUnserializeModel(model);
+	test_data <- data.frame(InputDataSet);
+	result <- rxPredict(trainedModel, data=test_data,predVarNames=c("Pred_Value"));		
+	result2<-data.frame(cbind(test_data$BikeBuyer,result$Pred_Value));	
+	names(result2)<-c("Actual_Buy","Pred_Buy");	
+	OutputDataSet <- result2
+
+	#輸出ROC圖檔
+	mainDir <- "C:\\PP" 
+	dest_filename = tempfile(pattern = "My_ROC_Curve_DForest_Plots", tmpdir = mainDir)  
+	dest_filename = paste(dest_filename, ''.jpg'',sep="")      
+	jpeg(filename=dest_filename);
+	rxRocCurveObject <- rxRocCurve(
+			actualVarName="Actual_Buy"
+			,predVarNames=c("Pred_Buy")
+			,data=result2
+			,title="ROC Curve For DForest Model");
+	plot(rxRocCurveObject);
+	dev.off();	
+  ',
+  @input_data_1 = @query,
+  @params = N'@model varbinary(max)',
+  @model = @mm
+ ;
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
