@@ -482,3 +482,63 @@ EXEC sp_execute_external_script
  ;
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DECLARE @query nvarchar(max) = N'SELECT [BikeBuyer], [NewGender], [NewMarital], [AgeLevel], [YearlyIncomeLevel], [Star]
+	, [HouseOwned], [NumberCarsOwned], [HasChild], [HasChildAtHome], [EduLevel], [JobLevel], [DistanceLevel], [RegionLevel]
+	FROM [BikeBuyerPredict_New] WHERE [RowId]>13000';
+DECLARE @m4 VARBINARY(MAX) = (SELECT 模型 FROM 模型表 WHERE 編號=12);
+DECLARE @m5 VARBINARY(MAX) = (SELECT 模型 FROM 模型表 WHERE 編號=11);
+DECLARE @m6 VARBINARY(MAX) = (SELECT 模型 FROM 模型表 WHERE 編號=2);
+DECLARE @m9 VARBINARY(MAX) = (SELECT 模型 FROM 模型表 WHERE 編號=3);
+DECLARE @m10 VARBINARY(MAX) = (SELECT 模型 FROM 模型表 WHERE 編號=10);
+DECLARE @m11 VARBINARY(MAX) = (SELECT 模型 FROM 模型表 WHERE 編號=1);
+
+EXEC sp_execute_external_script 
+  @language = N'R',
+  @script = N'    
+	test_data <- data.frame(InputDataSet);
+	model_fastLogit <- rxUnserializeModel(m4);
+	model_fastTree <- rxUnserializeModel(m5);
+	model_fastForest <- rxUnserializeModel(m6);
+	model_logit <- rxUnserializeModel(m9);
+	model_tree <- rxUnserializeModel(m10);
+	model_forest <- rxUnserializeModel(m11);
+	
+	result_fastLogit <- rxPredict(model_fastLogit, data=test_data);
+	result_fastTree <- rxPredict(model_fastTree, data=test_data);
+	result_fastForest <- rxPredict(model_fastForest, data=test_data);
+	result_logit <- rxPredict(model_logit, data=test_data);
+	result_tree <- rxPredict(model_tree, data=test_data);
+	result_forest <- rxPredict(model_forest, data=test_data);
+
+	final_result<-data.frame(cbind(test_data$BikeBuyer
+		,result_fastLogit[,3],result_fastTree[,3],result_fastForest[,3]
+		,result_logit[,1],result_tree[,1],result_forest[,1]		
+		));	
+
+	names(final_result)<-c("Actual_Buy","Pred_FastLogit","Pred_FastTree","Pred_FastForest","Pred_Logit","Pred_DTree","Pred_DForest");	
+	OutputDataSet <- final_result
+
+	#輸出ROC圖檔
+	mainDir <- "C:\\PP" 
+	dest_filename = tempfile(pattern = "My_ROC_Curve_Multi_Plots", tmpdir = mainDir)  
+    dest_filename = paste(dest_filename, ''.jpg'',sep="")      
+	jpeg(filename=dest_filename);
+	rxRocCurveObject <- rxRocCurve(
+			actualVarName="Actual_Buy"
+			,predVarNames=c("Pred_FastLogit","Pred_FastTree","Pred_FastForest","Pred_Logit","Pred_DTree","Pred_DForest")
+			,data=final_result
+			,title="ROC Curve For Multi Model");
+	plot(rxRocCurveObject);
+	dev.off();	
+  ',
+  @input_data_1 = @query,
+  @params = N'@m4 varbinary(max),@m5 varbinary(max),@m6 varbinary(max),@m9 varbinary(max),@m10 varbinary(max),@m11 varbinary(max)',
+  @m4 = @m4,
+  @m5 = @m5,
+  @m6 = @m6,
+  @m9 = @m9,
+  @m10 = @m10,
+  @m11 = @m11
+ ;
+
+------------------------------------------------------------------------
