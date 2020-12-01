@@ -325,12 +325,31 @@ GO
 --TRUNCATE TABLE  模型表
 EXEC PUTMM  N'決策樹';
 --DELETE  FROM 模型表 WHERE 模型 IS NULL
-
+--DELETE  FROM 模型表 WHERE 編號=5
 
 ---插入決策森林
 ----
 --=========
 --ML第二團對
+ALTER PROC #TempPP @sqlQuery NVARCHAR(MAX),@trainedModel VARBINARY(MAX) OUTPUT
+AS
+	EXECUTE sp_execute_external_script @language = N'R',  
+	@script = N'   
+		inputData<-data.frame(InputDataSet)	
+		cs<-colnames(inputData)		#取出欄位名
+		frm<-paste(cs[1], paste(cs[2:length(cs)], collapse=" + "), sep=" ~ ")			
+		model <- rxFastForest(frm, inputData,type = c("binary"))		
+		trainedModel<-rxSerializeModel(model,realtimeScoringOnly=TRUE)
+	'
+	,@input_data_1=@sqlQuery
+	,@params=N'@trainedModel VARBINARY(MAX) OUTPUT'
+	,@trainedModel=@trainedModel OUTPUT
+	;
+ 
+EXEC PUTMM  N'快速決策森林';
+GO
+
+
 ALTER PROC #TempPP @sqlQuery NVARCHAR(MAX),@trainedModel VARBINARY(MAX) OUTPUT
 AS
 	EXECUTE sp_execute_external_script @language = N'R',  
