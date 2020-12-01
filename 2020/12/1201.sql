@@ -282,11 +282,11 @@ AS
 	,@trainedModel=@trainedModel OUTPUT
 ;
  
-
 --TRUNCATE TABLE  模型表
 EXEC PUTMM  N'決策森林';
 SELECT * FROM 模型表
 ---插入決策森林
+----
 
 --ML第二團對
 ALTER PROC #TempPP @sqlQuery NVARCHAR(MAX),@trainedModel VARBINARY(MAX) OUTPUT
@@ -308,24 +308,8 @@ EXEC PUTMM  N'快速決策森林';
 GO
 
 
-
---ML
-ALTER PROC #TempPP @sqlQuery NVARCHAR(MAX),@trainedModel VARBINARY(MAX) OUTPUT
-AS
-	EXECUTE sp_execute_external_script @language = N'R',  
-	@script = N'   
-		inputData<-data.frame(InputDataSet)	
-		cs<-colnames(inputData)		#取出欄位名		
-		frm<-paste(cs[1], paste(cs[2:length(cs)], collapse="+"), sep="~")
-		model <- rxFastForest(frm,inputData,type=c("binary"))		
-		trainedModel<-rxSerializeModel(model)
-	'
-	,@input_data_1=@sqlQuery
-	,@params=N'@trainedModel VARBINARY(MAX) OUTPUT'
-	,@trainedModel=@trainedModel OUTPUT
-;
-GO
-
+ 
+---解出來計算
 DECLARE @query nvarchar(max) = N'SELECT [BikeBuyer], [NewGender], [NewMarital], [AgeLevel], [YearlyIncomeLevel], [Star]
 	, [HouseOwned], [NumberCarsOwned], [HasChild], [HasChildAtHome], [EduLevel], [JobLevel], [DistanceLevel], [RegionLevel]
 	FROM [BikeBuyerPredict_New] WHERE [RowId]>13000';
