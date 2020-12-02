@@ -17,7 +17,7 @@ SELECT * FROM #TT
 */
 
 --2015-1-4 1 20:00
-
+--EXEC dbo.sp_rename @objname=N'[dbo].[telemetry].[_datetime]', @newname=N'_datetime222', @objtype=N'COLUMN'
 EXEC sp_rename 'dbo.telemetry._datetime222', '_datetime','COLUMN';
 
 ---Teacher
