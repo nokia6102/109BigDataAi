@@ -18,8 +18,9 @@ SELECT * FROM #TT
 
 --2015-1-4 1 20:00
 --EXEC dbo.sp_rename @objname=N'[dbo].[telemetry].[_datetime]', @newname=N'_datetime222', @objtype=N'COLUMN'
-EXEC sp_rename 'dbo.telemetry._datetime222', '_datetime','COLUMN';
+EXEC sp_rename 'dbo.telemetry._datetime', '_datetime','COLUMN';
 
+CREATE FUNCTION
 ---Teacher
 DECLARE @dt1 DATETIME2='2015-1-4 20:00:00';
 DECLARE @dt2 DATETIME2= DATEADD(HOUR,-23,@dt1);
