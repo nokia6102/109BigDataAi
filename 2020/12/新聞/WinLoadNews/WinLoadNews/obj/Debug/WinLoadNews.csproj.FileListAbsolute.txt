@@ -1,0 +1,10 @@
+C:\Users\study\Documents\WinLoadNews\WinLoadNews\bin\Debug\WinLoadNews.exe.config
+C:\Users\study\Documents\WinLoadNews\WinLoadNews\bin\Debug\WinLoadNews.exe
+C:\Users\study\Documents\WinLoadNews\WinLoadNews\bin\Debug\WinLoadNews.pdb
+C:\Users\study\Documents\WinLoadNews\WinLoadNews\obj\Debug\WinLoadNews.csprojAssemblyReference.cache
+C:\Users\study\Documents\WinLoadNews\WinLoadNews\obj\Debug\WinLoadNews.Form1.resources
+C:\Users\study\Documents\WinLoadNews\WinLoadNews\obj\Debug\WinLoadNews.Properties.Resources.resources
+C:\Users\study\Documents\WinLoadNews\WinLoadNews\obj\Debug\WinLoadNews.csproj.GenerateResource.cache
+C:\Users\study\Documents\WinLoadNews\WinLoadNews\obj\Debug\WinLoadNews.csproj.CoreCompileInputs.cache
+C:\Users\study\Documents\WinLoadNews\WinLoadNews\obj\Debug\WinLoadNews.exe
+C:\Users\study\Documents\WinLoadNews\WinLoadNews\obj\Debug\WinLoadNews.pdb

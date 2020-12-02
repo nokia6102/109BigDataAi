@@ -1,0 +1,9 @@
+C:\MyVS\WinForm_NewsClassify\WinForm_NewsClassify\bin\Debug\WinForm_NewsClassify.exe
+C:\MyVS\WinForm_NewsClassify\WinForm_NewsClassify\bin\Debug\WinForm_NewsClassify.pdb
+C:\MyVS\WinForm_NewsClassify\WinForm_NewsClassify\obj\Debug\WinForm_NewsClassify.csprojAssemblyReference.cache
+C:\MyVS\WinForm_NewsClassify\WinForm_NewsClassify\obj\Debug\WinForm_NewsClassify.Form1.resources
+C:\MyVS\WinForm_NewsClassify\WinForm_NewsClassify\obj\Debug\WinForm_NewsClassify.Properties.Resources.resources
+C:\MyVS\WinForm_NewsClassify\WinForm_NewsClassify\obj\Debug\WinForm_NewsClassify.csproj.GenerateResource.cache
+C:\MyVS\WinForm_NewsClassify\WinForm_NewsClassify\obj\Debug\WinForm_NewsClassify.csproj.CoreCompileInputs.cache
+C:\MyVS\WinForm_NewsClassify\WinForm_NewsClassify\obj\Debug\WinForm_NewsClassify.exe
+C:\MyVS\WinForm_NewsClassify\WinForm_NewsClassify\obj\Debug\WinForm_NewsClassify.pdb
