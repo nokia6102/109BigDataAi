@@ -20,6 +20,7 @@ FROM [PicPathData] AS A JOIN [ObjectType] AS B ON A.[Type]=B.[Type];
 WITH T1
 AS
 (
+	-- 算每個種類中的各數
 	SELECT DISTINCT [Type],COUNT(*) AS Cnt
 	FROM [PicPathData]
 	GROUP BY [Type]
@@ -27,6 +28,7 @@ AS
 T2
 AS
 (
+	--取前7成的數字
 	SELECT DISTINCT [Type],ROUND(Cnt*0.7,0) AS Range
 	FROM T1
 )
