@@ -1,0 +1,6 @@
+C:\MyVS\testZodiac\testZodiac\bin\Debug\testZodiac.dll
+C:\MyVS\testZodiac\testZodiac\bin\Debug\testZodiac.pdb
+C:\MyVS\testZodiac\testZodiac\obj\Debug\testZodiac.csproj.CoreCompileInputs.cache
+C:\MyVS\testZodiac\testZodiac\obj\Debug\testZodiac.dll
+C:\MyVS\testZodiac\testZodiac\obj\Debug\testZodiac.pdb
+C:\MyVS\testZodiac\testZodiac\obj\Debug\testZodiac.csprojAssemblyReference.cache
